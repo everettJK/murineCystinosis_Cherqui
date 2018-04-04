@@ -95,6 +95,11 @@ intSites <- unlist(GRangesList(lapply(split(subjects, subjects$organism), functi
 })))
 
 
+# Add VCN values.
+intSites$VCN <- sapply(intSites$GTSP, function(x){ round(samples[match(x, samples$SpecimenAccNum),]$VCN, digits=3) })
+intSites[which(intSites$VCN == 0)]$VCN <- NA
+
+
 # First, check with CYS samples are in the full list of INSPIIRED samples and then determine which 
 # of those samples are not in the intSite object which requires at least 1 site to be found for inclussion. 
 samplesNoIntSitesFound <- 
@@ -264,7 +269,7 @@ intSiteFragPlot <-
     geom_bar(stat='identity') +
     scale_fill_manual(values=c('green3', 'dodgerblue', 'gold1', 'red')) +
     xlim(c(1, 100)) +
-    labs(x='Fragments', y='log2(Number of integration sites + 1)')
+    labs(x='Clones', y='log2(Number of integration sites + 1)')
 
 
 # Create intSite heat maps.
@@ -345,16 +350,30 @@ abundantClones20 <-
 sampleSummary <-
   intSites %>%
   data.frame() %>%
-  select(patient, GTSP, organism, timePoint, cellType, posid, relAbund, estAbund, nearestFeature) %>%
+  select(patient, GTSP, organism, timePoint, cellType, posid, relAbund, estAbund, nearestFeature, VCN) %>%
   group_by(organism, GTSP) %>%
   summarise(Subject = patient[1],
             'Cell type' = cellType[1],
+            'VCN' = VCN[1],
             'Time point' = timePoint[1],
             'Number inferred cells' = ppNum(sum(estAbund)),
             'Number of intSites' = ppNum(length(unique(posid)))) %>%
   ungroup()
   
   
+# Currently the returned intSite object contains 'TRUE' or NA -- NA breaks ifelse.
+intSites$inFeature[is.na(intSites$inFeature)] <- 'FALSE'
+
+intSites$nearestFeature2 <- 
+  intSites %>%
+  data.frame() %>%
+  mutate(nearestFeature2 = paste0(nearestFeature, ' ')) %>% 
+  mutate(nearestFeature2 = ifelse(inFeature == 'TRUE', paste0(nearestFeature2, '*'), nearestFeature2)) %>%
+  mutate(nearestFeature2 = ifelse(abs(nearestOncoFeatureDist) <= 50000, paste0(nearestFeature2, '~'), nearestFeature2)) %>%
+  select(nearestFeature2) %>%
+  unlist() %>%
+  unname()
+
 
 # Cycle through the cell transplant trials and create relative abunance plots, matrix of intSites
 # near oncogenes, and data frames of intSites that persist in the recipient mice.
@@ -365,12 +384,14 @@ transferTrials <- lapply(1:nrow(cellTransfers), function(i){
   b <- data.frame(subset(intSites, patient == d$To))
   
   createPlotData <- function(x){
+    #browser()
     arrange(x, desc(relAbund)) %>%
     mutate(label1 = paste0(x$patient[1], '\n',
+                          'VCN: ', VCN[1], '\n',
                           'Unique sites: ', ppNum(length(unique(posid))), '\n',
                           'Inferred cells: ', numShortHand(sum(estAbund)), '\n',
                           x$timePoint[1], ' / ', x$cellType[1])) %>%
-    mutate(label2 = paste0(nearestFeature, '\n', posid)) %>%
+    mutate(label2 = paste0(nearestFeature2, '\n', posid)) %>%
     filter(between(row_number(), 1, 12)) %>%
     select(label1, label2, relAbund) %>%
     add_row(relAbund=100-sum(.$relAbund),
@@ -388,7 +409,8 @@ transferTrials <- lapply(1:nrow(cellTransfers), function(i){
       theme_bw() +
       geom_bar(stat='identity') +
       scale_fill_manual(name = 'intSites', values = c('gray90', createColorPalette(24))) +
-      labs(x='', y='Relative abundance')
+      labs(x='', y='Relative abundance') +
+    guides(fill=guide_legend(ncol=2))
   
   m <- matrix(c(sum(abs(a$nearestOncoFeatureDist) > 50000, na.rm = TRUE),  sum(abs(a$nearestOncoFeatureDist) <= 50000, na.rm = TRUE),
                 sum(abs(b$nearestOncoFeatureDist) > 50000, na.rm = TRUE),  sum(abs(b$nearestOncoFeatureDist) <= 50000, na.rm = TRUE)), 
@@ -402,7 +424,8 @@ transferTrials <- lapply(1:nrow(cellTransfers), function(i){
                Recipient = b$patient[1],
                intSite = posID,
                'Donor cells' = ppNum(sum(subset(a, posid == posID)$estAbund)),
-               'Recipient cells' = ppNum(sum(subset(b, posid == posID)$estAbund))) }))
+               'Recipient cells' = ppNum(sum(subset(b, posid == posID)$estAbund)),
+               check.names = FALSE) }))
   
   list(plot = plot, m = m, sharedSites = sharedSites)
 })
