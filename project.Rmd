@@ -56,7 +56,8 @@ while no integration sites were detected in `r length(samplesNoIntSitesFound)` o
 \vspace{0.1cm}
 
 ```{r, echo=FALSE, eval=TRUE}
-kable(summaryTable,  format = "latex", caption = 'Table 1. Overview of data collection.', booktabs = T) %>%
+names(summaryTable) <- c('Organism', 'Number of samples', 'Number of reads', 'Number of inferred cells', 'Number of integration sites')
+kable(summaryTable,  format = "latex", align='c', caption = 'Table 1. Overview of data collection.', booktabs = T) %>%
   kable_styling(latex_options = c("hold_position"))
 ```
 
@@ -65,8 +66,9 @@ kable(summaryTable,  format = "latex", caption = 'Table 1. Overview of data coll
 # UCSC browser exploration
 UCSC browser sessions pre-loaded with the integration sites identified in this analysis are available via these links: 
 ([human subjects](http://genome.ucsc.edu/cgi-bin/hgTracks?org=human&db=hg38&hgt.customText=http://microb120.med.upenn.edu/UCSC/cherqui/UCSC_CYS_human.ucsc)), 
-([mouse subjects](http://genome.ucsc.edu/cgi-bin/hgTracks?org=mouse&db=mm9&hgt.customText=http://microb120.med.upenn.edu/UCSC/cherqui/UCSC_CYS_mouse.ucsc)). You may have to allow your browser to open a new browser window. Integration sites are shown
-as blue (positive orientation integration) and red (reverse orientation integration) tick marks. For each integration site, a second track provides the maximum clonal abundance. Entering gene names into the search bar will direct the browser to specific genes. 
+([mouse subjects](http://genome.ucsc.edu/cgi-bin/hgTracks?org=mouse&db=mm9&hgt.customText=http://microb120.med.upenn.edu/UCSC/cherqui/UCSC_CYS_mouse.ucsc)). 
+Integration sites are shown as blue (positive orientation integration) and red (reverse orientation integration) tick marks. For each integration site, 
+a second track provides the maximum clonal abundance. Entering gene names into the search bar will direct the browser to specific genes. 
 
 \newpage
 
@@ -148,7 +150,7 @@ mouseIntSiteMap
 
 The sample relative abundance plots below (Figure 4) show the most abundant 25 clones in each human sample as colored 
 bars while less abundant clones were relegated to a single low abundance bar shown in gray. Subject DON.002.4.SC 
-showed an expanded clone (30% relative abundance) with an integration event down stream of the non-coding RNA LOC105374704. 
+showed an expanded clone (30% relative abundance) with an integration event down stream of the non-coding RNA gene LOC105374704. 
 Subject DON.007.CR showed an expanded clone (15% relative abundance) with three integration events within ZNF337. 
 These two expanded clones are not of immediate concern given that such expanded clones appeared in the WAS trial used 
 for comparison (Figure S1) and both samples contained relatively few inferred cells which inflate relative abundance values. 
@@ -171,14 +173,13 @@ grid.arrange(grobs=humanRelAbundPlots[17:length(humanRelAbundPlots)], ncol=4)
 
 # Expanded clones  
 
-Table 2 below lists integration sites with relatives cell abundances $\geq$ 20%. These integration events may be driving cell
-division and follow-up longitudinal studies may be warranted. The estimated number of cells harboring each integration 
-(estAbund) is shown for context. 
-
+Table 2 below lists clones with relative clonal abundances $\geq$ 20%. The estimated number of cells harboring each integration 
+(Abundance) is shown for context. 
 
 *Table 2.*  
 
 ```{r table2, echo=FALSE, eval=TRUE, cache=FALSE, results='asis'}
+names(abundantClones20) <- c('Subject', 'Organism', 'Time point', 'Cell type', 'Position', 'Relative abundance', 'Abundance', 'Nearest Gene')
 kable(abundantClones20, format = "latex", linesep = "", booktabs = T) %>% kable_styling(latex_options = c("striped", "scale_down"))
 ```
 
@@ -191,8 +192,8 @@ mice) and Figure 5b (recipient mice). The gRxCluster software package did not id
 between donor and recipient mice with a false discovery rate of $\leq$ 10%.
 The relative clonal abundances of samples from the transplant trials are shown in Figure 6 where donor mice are shown on
 the left and recipient mice are shown on the right. Integration sites are denoted by both nearest gene and genomic coordinate
-and annotated with an asterisk (*) if located within transcription units and with a tilda (~) if the nearest gene is considered
-an oncogene. Below each abundance plot is a Fisher’s exact test for the enrichment of oncogenes. None of the tests returned
+and annotated with an asterisk (*) if located within transcription units and with a tilda (~) if the integration site is within 
+50 KB of an oncogene. Below each abundance plot is a Fisher’s exact test for the enrichment of oncogenes. None of the tests returned
 a significant result. The clonal abundances of clones found in both donor and recipient mice is shown in Table S3. The
 identification of relatively few persistent clones is likely due to sequencing experiments sampling only a subset of existing
 integration sites and a number of samples with low vector copy numbers (Figures 5B & S3).  
@@ -206,14 +207,14 @@ grid.arrange(mouseDonorIntSiteMap + ggtitle('A'), mouseRecipientIntSiteMap + ggt
 \newpage
 
 
-```{r, echo=FALSE, fig.height=5, results='asis', cache=FALSE}
+```{r, echo=FALSE, fig.height=7, results='asis', cache=FALSE}
 n <- 1
 for(i in 1:length(transferTrials)){
   cat(paste0('Figure 6', letters[n], '.\n\n'))
   n <- n+1
   print(transferTrials[[i]][[1]])
   cat('\n\\vspace{1.0cm}\n')
-  caption <- paste0("Sites near oncogenes, Fisher's exact p-value: ", sprintf("%.3f", fisher.test(transferTrials[[i]][[2]])$p.value))
+  caption <- paste0("Fisher's exact p-value: ", sprintf("%.3f", fisher.test(transferTrials[[i]][[2]])$p.value))
   print(kable(transferTrials[[i]][[2]], format = "latex", caption = caption, booktabs = TRUE) %>%  kable_styling(latex_options = c("hold_position")))
   cat('\n\\newpage\n')
 }
@@ -277,6 +278,7 @@ Drake MJ, Bates P, Hacein-Bey-Abina S, Cavazzana M, Bushman FD. Mol Ther Methods
 
 *Table S1.*  
 ```{r tableS1, echo=FALSE, eval=TRUE, cache=FALSE}
+names(sampleSummary) <- c('Organism', 'GTSP', 'Subject', 'Cell type', 'VCN', 'Time point', 'Number inferred cells', 'Number of intSites')
 kable(sampleSummary[1:30,], format = "latex", linesep = "", booktabs = T) %>% kable_styling(latex_options = c("striped", "scale_down"))
 ```
 
@@ -293,6 +295,7 @@ kable(sampleSummary[31:nrow(sampleSummary),], format = "latex", linesep = "", bo
 
 *Table S2.*  
 ```{r tableS2, echo=FALSE, eval=TRUE, cache=FALSE}
+names(failedSampleTable) <- c('GTSP', 'Cell type', 'Subject', 'Time point', 'Comment')
 kable(failedSampleTable, format = "latex", linesep = "", booktabs = T) %>% kable_styling(latex_options = c("striped", "scale_down"))
 ```
 
@@ -325,6 +328,7 @@ WASintSites_d0_map
 *Table S3.*   
   
 ```{r TableS3, echo=FALSE, eval=TRUE,  cache=FALSE}
+names(cellTransfer_intSites_table) <- c('Donor', 'Recipient', 'Position', 'Donor cells', 'Recipient cells')
 kable(cellTransfer_intSites_table, format = "latex", linesep = "", booktabs = T) %>% kable_styling(latex_options = c("striped", "scale_down"))
 ```
 
