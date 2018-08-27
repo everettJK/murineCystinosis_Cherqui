@@ -88,7 +88,7 @@ intSites <- unlist(GRangesList(lapply(split(subjects, subjects$organism), functi
      
      mcols(p) <- dplyr::mutate(data.frame(mcols(p)), 
                                nearestOncoFeature       = o$nearestFeature,
-                             nearestOncoFeatureDist   = o$nearestFeatureDist,
+                               nearestOncoFeatureDist   = o$nearestFeatureDist,
                                nearestOncoFeatureStrand = o$nearestFeatureStrand)
      p
    })))
