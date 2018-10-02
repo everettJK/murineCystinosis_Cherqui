@@ -7,12 +7,13 @@ library(GenomicRanges)
 library(grDevices)
 library(RColorBrewer)
 library(tidyverse)
+library(gintools)
 source('./supp.R')
 CPUs <- 40
 
-savePointPrefix    <- 'secondGroup'
-reportSubjectsFile <- 'data/group2.subjects'
-reportCellTransfersFile <- 'data/group2.cellTransfers.tsv'
+savePointPrefix    <- 'group1'
+reportSubjectsFile <- 'data/group1.subjects'
+reportCellTransfersFile <- 'data/group1.cellTransfers_v2.tsv'
 
 
 reportSubjects <- scan(reportSubjectsFile, what = 'character', sep = '\n')
@@ -66,20 +67,28 @@ intSites <- unlist(GRangesList(lapply(split(subjects, subjects$organism), functi
    # Setup parallelization.
    cluster <- parallel::makeCluster(CPUs)
    
-   #browser()
+   # Standardize break points by sample.
+   ### intSites <- intSites[width(intSites) >= 8]
+   ## intSites <- unlist(GRangesList(parLapply(cluster, split(intSites, intSites$patient), function(p){
+   ##   gt23::standardizeSeqRanges.malani(p, standardizeStart=TRUE, standardizeEnd=FALSE)
+   ## })))
+   
+  
+    intSites <- unlist(GRangesList(parLapply(cluster, split(intSites, intSites$patient), function(p){
+       gintools::standardize_sites(p, counts.col = 'reads')
+    })))
+   
    
    # Standardize break points by sample.
-   intSites <- intSites[width(intSites) >= 8]
-   intSites <- unlist(GRangesList(parLapply(cluster, split(intSites, intSites$patient), function(p){
-     gt23::standardizeSeqRanges.malani(p, standardizeStart=TRUE, standardizeEnd=FALSE)
-   })))
-   
-   
-   # Standardize break points by sample.
-   intSites <- intSites[width(intSites) >= 8]
-   intSites <- unlist(GRangesList(parLapply(cluster, split(intSites, intSites$sampleName), function(p){
-     gt23::standardizeSeqRanges.malani(p, standardizeStart=FALSE, standardizeEnd=TRUE)
-   })))
+   #intSites <- intSites[width(intSites) >= 8]
+   #intSites <- unlist(GRangesList(parLapply(cluster, split(intSites, intSites$sampleName), function(p){
+   #  gt23::standardizeSeqRanges.malani(p, standardizeStart=FALSE, standardizeEnd=TRUE)
+   # })))
+    
+    intSites <- unlist(GRangesList(parLapply(cluster, split(intSites, intSites$sampleName), function(p){
+      gintools::refine_breakpoints(p, counts.col = 'reads')
+    })))
+    
    
    # Merge replicate samples and estimate clonal abundances.
    intSites <- gt23::calcReplicateAbundances(intSites)
@@ -139,6 +148,22 @@ intSites <- unlist(GRangesList(lapply(split(subjects, subjects$organism), functi
 save.image(file = paste0('savePoints/', savePointPrefix, '.1.RData'))
 
 
+
+# Hot fixes
+samples[which(samples$SpecimenAccNum == 'GTSP0834'),]$SpecimenInfo <- "Control, DNA was extracted from mouse Sca1+ cells and cultured for 2 weeks (Mock)"
+samples[which(samples$SpecimenAccNum == 'GTSP1868'),]$SpecimenInfo <- "pCCL-CTNS transduced, Secondary graft, Primary graft mouse: CN671, Primary graft"
+samples[which(samples$SpecimenAccNum == 'GTSP1976'),]$SpecimenInfo <- "Pathology sample 2 from CN752 (thymus)"
+samples[which(samples$SpecimenAccNum == 'GTSP1975'),]$SpecimenInfo <- "Pathology sample 1 from CN752 (found in thorax)"
+samples[which(samples$Timepoint == 0),]$Timepoint <- "D0"
+samples$Timepoint <- toupper(samples$Timepoint)
+samples[which(samples$Timepoint == '6M'),]$Timepoint <- "M6"
+intSites$timePoint <- toupper(intSites$timePoint)
+intSites$timePoint <- gsub('6M', 'M6', intSites$timePoint)
+intSites$timePoint <- gsub('^0$', 'D0', intSites$timePoint)
+
+
+
+
 # Add VCN values.
 intSites$VCN <- sapply(intSites$GTSP, function(x){ round(samples[match(x, samples$SpecimenAccNum),]$VCN, digits=3) })
 intSites[which(intSites$VCN == 0)]$VCN <- NA
@@ -146,8 +171,8 @@ intSites[which(intSites$VCN == 0)]$VCN <- NA
 
 # First, check with CYS samples are in the full list of INSPIIRED samples and then determine which 
 # of those samples are not in the intSite object which requires at least 1 site to be found for inclussion. 
-samplesNoIntSitesFound <- 
-  samples$SpecimenAccNum[! samples$SpecimenAccNum[samples$SpecimenAccNum %in% intSitesamples] %in% intSites$GTSP]
+processedSamples <- samples$SpecimenAccNum[samples$SpecimenAccNum %in% intSitesamples]
+samplesNoIntSitesFound <- processedSamples[!processedSamples %in% intSites$GTSP]
 
 failedSampleTable <-
   samples %>%
@@ -176,8 +201,10 @@ intSiteReadsPlot <-
   group_by(GTSP, posid) %>%
   summarise(nReads = sum(reads),
             group  = ifelse(organism == 'human', 'Human', 
-                            ifelse(patient %in% cellTransfers$From, 'Mouse donor',
-                                   ifelse(patient %in% cellTransfers$To, 'Mouse recipient', 'Mouse')))) %>%
+                            ### ifelse(patient %in% cellTransfers$From, 'Mouse donor',
+                            ifelse(GTSP %in% cellTransfers$From, 'Mouse donor',
+                                   ### ifelse(patient %in% cellTransfers$To, 'Mouse recipient', 'Mouse')))) %>%
+                                   ifelse(GTSP %in% cellTransfers$To, 'Mouse recipient', 'Mouse')))) %>%
   ungroup() %>%
   arrange(group) %>%
   mutate(GTSP = factor(GTSP, levels = unique(GTSP))) %>%
@@ -240,7 +267,8 @@ WASvsHumanSubjects <-
 
 mouseSitesNearOnco <- 
   data.frame(subset(intSites, organism=='mouse')) %>%
-  filter(patient %in% cellTransfers$From) %>%
+  ### filter(patient %in% cellTransfers$From) %>%
+  filter(GTSP %in% cellTransfers$From) %>%
   group_by(patient) %>%
   summarise(percentNearOnco = n_distinct(posid[abs(nearestOncoFeatureDist) <= 50000]) / n_distinct(posid)) %>%
   ungroup() %>%
@@ -336,8 +364,10 @@ chromosomeLengths <- sapply(rev(paste0("chr", c(seq(1:19), "X", "Y"))),
                             simplify = FALSE, USE.NAMES = TRUE)
 
 mouseIntSiteMap <- intSiteDistributionPlot(subset(intSites, organism == 'mouse'), chromosomeLengths, alpha = 0.2)
-mouseDonorIntSiteMap <- intSiteDistributionPlot(subset(intSites, patient %in% cellTransfers$From), chromosomeLengths, alpha = 0.3)
-mouseRecipientIntSiteMap <- intSiteDistributionPlot(subset(intSites, patient %in% cellTransfers$To), chromosomeLengths, alpha = 0.5)
+### mouseDonorIntSiteMap <- intSiteDistributionPlot(subset(intSites, patient %in% cellTransfers$From), chromosomeLengths, alpha = 0.3)
+mouseDonorIntSiteMap <- intSiteDistributionPlot(subset(intSites, GTSP %in% cellTransfers$From), chromosomeLengths, alpha = 0.3)
+### mouseRecipientIntSiteMap <- intSiteDistributionPlot(subset(intSites, patient %in% cellTransfers$To), chromosomeLengths, alpha = 0.5)
+mouseRecipientIntSiteMap <- intSiteDistributionPlot(subset(intSites, GTSP %in% cellTransfers$To), chromosomeLengths, alpha = 0.5)
 
 
 # Create relative abundance plots for the human samples and store them as a list of grobs so that they 
@@ -424,8 +454,14 @@ intSites$nearestFeature2 <-
 
 transferTrials <- lapply(1:nrow(cellTransfers), function(i){
   d <- cellTransfers[i,]
-  a <- data.frame(subset(intSites, patient == d$From))
-  b <- data.frame(subset(intSites, patient == d$To))
+  
+  ## a <- data.frame(subset(intSites, patient == d$From))
+  ## b <- data.frame(subset(intSites, patient == d$To))
+  
+  #if(d$From == 'GTSP1697') browser()
+  
+  a <- data.frame(subset(intSites, GTSP == d$From))
+  b <- data.frame(subset(intSites, GTSP == d$To))
   
   createPlotData <- function(x){
     #browser()
@@ -434,7 +470,7 @@ transferTrials <- lapply(1:nrow(cellTransfers), function(i){
                           'VCN: ', VCN[1], '\n',
                           'Unique sites: ', ppNum(length(unique(posid))), '\n',
                           'Inferred cells: ', numShortHand(sum(estAbund)), '\n',
-                          x$timePoint[1], ' / ', x$cellType[1])) %>%
+                          x$GTSP[1], ' / ', x$timePoint[1], ' / ', x$cellType[1])) %>%
     mutate(label2 = paste0(nearestFeature2, '\n', posid)) %>%
     filter(between(row_number(), 1, 12)) %>%
     select(label1, label2, relAbund) %>%
@@ -504,4 +540,17 @@ mouseGenomePercentOnco <- round((length(gt23::mouseOncoGenesList)) / length(uniq
 
 
 # Save data for report generation.
-save.image(file='project.RData')
+save.image(file='project.group1.RData')
+
+
+# Patient check
+p <- scan('group1.check', what = 'character', sep = '\n')
+i <- unique(c(intSites$patient, failedSampleTable$Patient))
+
+# Are all the patients in the patient check list accounted for in the data?
+table(p %in% i)
+
+# Are there any patients in the data not in the check list?
+table(i %in% p)
+
+

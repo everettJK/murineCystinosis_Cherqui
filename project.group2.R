@@ -10,7 +10,7 @@ library(tidyverse)
 source('./supp.R')
 CPUs <- 40
 
-savePointPrefix    <- 'secondGroup'
+savePointPrefix    <- 'group2'
 reportSubjectsFile <- 'data/group2.subjects'
 reportCellTransfersFile <- 'data/group2.cellTransfers.tsv'
 
@@ -138,6 +138,15 @@ intSites <- unlist(GRangesList(lapply(split(subjects, subjects$organism), functi
 
 save.image(file = paste0('savePoints/', savePointPrefix, '.1.RData'))
 
+# Hot fixes
+samples[which(samples$SpecimenAccNum == 'GTSP1976'),]$SpecimenInfo <- "Pathology sample 2 from CN752 (thymus)"
+samples[which(samples$SpecimenAccNum == 'GTSP1975'),]$SpecimenInfo <- "Pathology sample 1 from CN752 (found in thorax)"
+samples$Timepoint <- toupper(samples$Timepoint)
+samples[which(samples$Timepoint == '6M'),]$Timepoint <- "M6"
+intSites$timePoint <- toupper(intSites$timePoint)
+intSites$timePoint <- gsub('6M', 'M6', intSites$timePoint)
+
+
 
 # Add VCN values.
 intSites$VCN <- sapply(intSites$GTSP, function(x){ round(samples[match(x, samples$SpecimenAccNum),]$VCN, digits=3) })
@@ -146,8 +155,8 @@ intSites[which(intSites$VCN == 0)]$VCN <- NA
 
 # First, check with CYS samples are in the full list of INSPIIRED samples and then determine which 
 # of those samples are not in the intSite object which requires at least 1 site to be found for inclussion. 
-samplesNoIntSitesFound <- 
-  samples$SpecimenAccNum[! samples$SpecimenAccNum[samples$SpecimenAccNum %in% intSitesamples] %in% intSites$GTSP]
+processedSamples <- samples$SpecimenAccNum[samples$SpecimenAccNum %in% intSitesamples]
+samplesNoIntSitesFound <- processedSamples[!processedSamples %in% intSites$GTSP]
 
 failedSampleTable <-
   samples %>%
@@ -174,73 +183,23 @@ intSiteReadsPlot <-
   intSites %>%
   data.frame() %>%
   group_by(GTSP, posid) %>%
-  summarise(nReads = sum(reads),
-            group  = ifelse(organism == 'human', 'Human', 
-                            ifelse(patient %in% cellTransfers$From, 'Mouse donor',
-                                   ifelse(patient %in% cellTransfers$To, 'Mouse recipient', 'Mouse')))) %>%
+  summarise(nReads = sum(reads)) %>%
   ungroup() %>%
-  arrange(group) %>%
   mutate(GTSP = factor(GTSP, levels = unique(GTSP))) %>%
-  ggplot(aes(GTSP, log10(nReads), fill=group)) + 
+  ggplot(aes(GTSP, log10(nReads))) + 
     theme_bw() +
-    geom_point(shape=22, alpha=0.05, stroke = 0, size=4) + 
+    geom_point(shape=22, alpha=0.05, stroke = 0, size=4, fill = 'blue') + 
     coord_flip() +
-    guides(fill = guide_legend(title="Sample type", override.aes = list(alpha = 1))) +
-    scale_fill_manual(values = c('red', 'green', 'blue', 'gold3')) +
+    #scale_fill_manual(values = c('red', 'green', 'blue', 'gold3')) +
     labs(y = 'log10(number of reads)', x = 'Sample')
 
-
-# Create a table of human subjects with the percent of sites near suspect oncogenes.
-humanSitesNearOnco <- 
-  data.frame(subset(intSites, organism=='human')) %>%
-  group_by(patient) %>%
-  summarise(percentNearOnco = n_distinct(posid[abs(nearestOncoFeatureDist) <= 50000]) / n_distinct(posid)) %>%
-  ungroup() %>%
-  arrange(percentNearOnco) %>%
-  mutate(source = 'CYS') %>%
-  data.frame()
-
-
-# Read in previously published WAS trial d0 data and rename the subjects and then determin the percentage
-# of intSites near oncogenes.
-
-n <- 1
-WASintSites_d0 <- readRDS('data/WAS_d0_intSites.rds')
-WASintSites_d0 <- unlist(GRangesList(lapply(split(WASintSites_d0, WASintSites_d0$patient), 
-                                            function(x){ x$patient <- paste('WAS subject', n); n <<- n+1; x})))
-
-
-wasSitesNearOnco <- 
-  data.frame(WASintSites_d0) %>%
-  group_by(patient) %>%
-  summarise(percentNearOnco = n_distinct(posid[abs(nearestOncoFeatureDist) <= 50000]) / n_distinct(posid)) %>%
-  ungroup() %>%
-  arrange(percentNearOnco) %>%
-  mutate(source = 'WAS') %>%
-  data.frame()
-
-
-# Create a bar plot comparing the percentage of intSites near oncogenes for human subjects vs WAS d0 subjects.
-WASvsHumanSubjects <- 
-  bind_rows(humanSitesNearOnco, wasSitesNearOnco) %>%
-  arrange(percentNearOnco) %>%
-  mutate(patient = factor(patient, levels=unique(patient))) %>%
-  ggplot(aes(patient, percentNearOnco, fill=source)) +
-    theme_bw() +
-    scale_fill_manual(values=c('gray75', 'blue')) +
-    geom_bar(stat='identity') +
-    theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-    guides(fill = FALSE) +
-    scale_y_continuous(limits = c(0, 0.33), labels = scales::percent) +
-    labs(x='Subject', y='Sites near oncogenes')
-    
 
 # Create similiar data frames and plots for the mouse subject by comparing the mouse subjects to a previously 
 # published mouse study.
 
 mouseSitesNearOnco <- 
   data.frame(subset(intSites, organism=='mouse')) %>%
-  filter(patient %in% cellTransfers$From) %>%
+  #filter(patient %in% cellTransfers$From) %>%
   group_by(patient) %>%
   summarise(percentNearOnco = n_distinct(posid[abs(nearestOncoFeatureDist) <= 50000]) / n_distinct(posid)) %>%
   ungroup() %>%
@@ -278,75 +237,23 @@ PMC3129560vsMouseSubjects <-
   labs(x='Subject', y='Sites near oncogenes')
 
 
-# Create a series of distributions showing the integrations sites vs the number of 
-# associated fragments (inferred cells) for the study samples as well as the previously 
-# published WAS time points.
-
-prevWASd0IntSiteFrags <- 
-  WASintSites_d0 %>%
-  data.frame() %>%
-  group_by(estAbund, timePoint) %>%
-  summarise(source = 'WAS', nSites = n_distinct(posid)) %>%
-  ungroup() 
-
-prevWASintSiteFrags <- 
-  readRDS('data/prevWASintSites.rds') %>%
-  data.frame() %>%
-  group_by(estAbund, timePoint) %>%
-  summarise(source = 'WAS', nSites = n_distinct(posid)) %>%
-  ungroup() 
-
-cysIntSiteFrags <- 
-  intSites %>%
-  data.frame() %>%
-  filter(organism == 'human') %>%
-  group_by(estAbund, timePoint) %>%
-  summarise(source = 'CYS', nSites = n_distinct(posid)) %>%
-  ungroup() 
-
-intSiteFragPlot <-
-  rbind(prevWASd0IntSiteFrags, prevWASintSiteFrags, cysIntSiteFrags) %>% 
-  filter(timePoint %in% c('d0', 'D14', 'm6', 'm12')) %>%
-  mutate('Data set' = toupper(paste(source, timePoint))) %>%
-  ggplot(aes(estAbund, log2(nSites+1), fill=`Data set`)) +
-    theme_bw() +
-    geom_bar(stat='identity') +
-    scale_fill_manual(values=c('green3', 'dodgerblue', 'gold1', 'red')) +
-    xlim(c(1, 100)) +
-    labs(x='Clones', y='log2(Number of integration sites + 1)')
-
-
 # Create intSite heat maps.
-
-# Create a list of chromosome lengths for select chromosomes, ie. [['chr1']] <- 248956422.
-library(BSgenome.Hsapiens.UCSC.hg38)
-names(intSites)   <- NULL
-names(WASintSites_d0) <- NULL
-chromosomeLengths <- sapply(rev(paste0("chr", c(seq(1:21), "X", "Y"))),
-                            function(x){length(BSgenome.Hsapiens.UCSC.hg38[[x]])},
-                            simplify = FALSE, USE.NAMES = TRUE)
-
-humanIntSiteMap <- intSiteDistributionPlot(subset(intSites, organism == 'human'), chromosomeLengths, alpha = 0.025)
-WASintSites_d0_map <- intSiteDistributionPlot(WASintSites_d0, chromosomeLengths, alpha = 0.2)
-
 
 library(BSgenome.Mmusculus.UCSC.mm9)
 chromosomeLengths <- sapply(rev(paste0("chr", c(seq(1:19), "X", "Y"))),
                             function(x){length(BSgenome.Mmusculus.UCSC.mm9[[x]])},
                             simplify = FALSE, USE.NAMES = TRUE)
-
+names(intSites) <- NULL
 mouseIntSiteMap <- intSiteDistributionPlot(subset(intSites, organism == 'mouse'), chromosomeLengths, alpha = 0.2)
-mouseDonorIntSiteMap <- intSiteDistributionPlot(subset(intSites, patient %in% cellTransfers$From), chromosomeLengths, alpha = 0.3)
-mouseRecipientIntSiteMap <- intSiteDistributionPlot(subset(intSites, patient %in% cellTransfers$To), chromosomeLengths, alpha = 0.5)
 
 
-# Create relative abundance plots for the human samples and store them as a list of grobs so that they 
+# Create relative abundance plots for the mouse samples and store them as a list of grobs so that they 
 # can be arranged in the report.
 
 o <-
   intSites %>% 
   data.frame() %>%
-  filter(organism == 'human') %>%
+  filter(organism == 'mouse') %>%
   group_by(GTSP) %>%
   mutate(nSites = n_distinct(posid)) %>%
   arrange(desc(relAbund)) %>%
@@ -362,7 +269,7 @@ o <-
               .before = 1)) %>%
   ungroup()
 
-humanRelAbundPlots <- 
+mouseRelAbundPlots <- 
   lapply(split(o, o$GTSP), function(x){
     x$nearestFeature <- factor(x$nearestFeature, levels = unique(x$nearestFeature))
     ggplot(x, aes(GTSP, relAbund/100, fill = nearestFeature)) +
@@ -486,22 +393,28 @@ cellTransfer_intSites_table <- bind_rows(lapply(transferTrials, '[[', 3))
 
 
 # Create UCSC track files.
-o <- subset(intSites, organism == 'human')
-createUCSCintSiteAbundTrack(o$posid, o$estAbund, subject = 'CYS_human', title = 'CYS_human', outputFile = 'UCSC_CYS_human.group1.ucsc')
-system(paste0('scp UCSC_CYS_human.group1.ucsc  microb120:/usr/share/nginx/html/UCSC/cherqui/'))
-file.remove('UCSC_CYS_human.group1.ucsc')
-
 
 o <- subset(intSites, organism == 'mouse')
-createUCSCintSiteAbundTrack(o$posid, o$estAbund, subject = 'CYS_mouse', title = 'CYS_mouse', outputFile = 'UCSC_CYS_mouse.group1.ucsc')
-system(paste0('scp UCSC_CYS_mouse.group1.ucsc  microb120:/usr/share/nginx/html/UCSC/cherqui/'))
-file.remove('UCSC_CYS_mouse.group1.ucsc')
+createUCSCintSiteAbundTrack(o$posid, o$estAbund, subject = 'CYS_mouse', title = 'CYS_mouse', outputFile = 'UCSC_CYS_mouse.group2.ucsc')
+system(paste0('scp UCSC_CYS_mouse.group2.ucsc  microb120:/usr/share/nginx/html/UCSC/cherqui/'))
+file.remove('UCSC_CYS_mouse.group2.ucsc')
 
 
 # Report shortcuts.
-humanGenomePercentOnco <- round((length(gt23::humanOncoGenesList)) / length(unique(gt23::hg38.refSeqGenesGRanges$name2))*100, digits=2)
 mouseGenomePercentOnco <- round((length(gt23::mouseOncoGenesList)) / length(unique(gt23::mm9.refSeqGenesGRanges))*100, digits=2)
 
 
 # Save data for report generation.
-save.image(file='project.RData')
+save.image(file='project.group2.RData')
+
+
+# Patient check
+p <- scan('group2.check', what = 'character', sep = '\n')
+i <- unique(c(intSites$patient, failedSampleTable$Patient))
+
+# Are all the patients in the patient check list accounted for in the data?
+table(p %in% i)
+
+# Are there any patients in the data not in the check list?
+table(i %in% p)
+

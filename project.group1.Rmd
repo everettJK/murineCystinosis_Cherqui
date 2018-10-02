@@ -4,20 +4,20 @@ geometry: margin=0.50in
 subparagraph: yes
 
 title: "Analysis of integration site distributions and clonal abundances for gene therapy correction of cystinosis"
-date:  "August 2018"
+date:  "October 2018"
 author: "John K. Everett, Ph.D. and Frederic Bushman, Ph.D."
 header-includes:
     - \usepackage{caption}
 output:
   pdf_document:
     toc: true
-    keep_tex: yes
+    keep_tex: no
     latex_engine: xelatex
 ---
 \captionsetup[table]{labelformat=empty}
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-load('project.RData')
+load('project.group1.RData')
 library(tidyverse)
 library(gt23)
 library(xtable)

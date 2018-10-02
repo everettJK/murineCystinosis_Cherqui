@@ -1,0 +1,99 @@
+Input	Input Type	MGI Gene/Marker ID	Symbol	Name	Feature Type
+JUNDM2	old symbol	MGI:1932093	Jdp2	Jun dimerization protein 2	protein coding gene
+EVI1	old symbol	MGI:95457	Mecom	MDS1 and EVI1 complex locus	protein coding gene
+MIRN106A	old symbol	MGI:3619120	Mir106a	microRNA 106a	miRNA gene
+MIRN29A	old symbol	MGI:2676904	Mir29a	microRNA 29a	miRNA gene
+TCFE2A	old symbol	MGI:98510	Tcf3	transcription factor 3	protein coding gene
+MIRN142	old symbol	MGI:2676827	Mir142	microRNA 142	miRNA gene
+MIRN17	old symbol	MGI:3619065	Mir17	microRNA 17	miRNA gene
+BRWD2	old symbol	MGI:1920230	Wdr11	WD repeat domain 11	protein coding gene
+BRWD2	human synonym	MGI:1932404	Phip	pleckstrin homology domain interacting protein	protein coding gene
+SFPI1	old symbol	MGI:98282	Spi1	spleen focus forming virus (SFFV) proviral integration oncogene	protein coding gene
+BC067047	old symbol	MGI:3040696	Prex1	phosphatidylinositol-3,4,5-trisphosphate-dependent Rac exchange factor 1	protein coding gene
+BC067047	GenBank	MGI:3040696	Prex1	phosphatidylinositol-3,4,5-trisphosphate-dependent Rac exchange factor 1	protein coding gene
+FBXL10	old symbol	MGI:1354737	Kdm2b	lysine (K)-specific demethylase 2B	protein coding gene
+RFWD2	old symbol	MGI:1347046	Cop1	COP1, E3 ubiquitin ligase	protein coding gene
+TMEPAI	old symbol	MGI:1929600	Pmepa1	prostate transmembrane protein, androgen induced 1	protein coding gene
+6430527G18RIK	old symbol	MGI:2442463	Irf2bpl	interferon regulatory factor 2 binding protein-like	protein coding gene
+CUTL1	old symbol	MGI:88568	Cux1	cut-like homeobox 1	protein coding gene
+5330421F07RIK	old symbol	MGI:2183691	Nav2	neuron navigator 2	protein coding gene
+RAD51L1	old symbol	MGI:1099436	Rad51b	RAD51 paralog B	protein coding gene
+5133401N09RIK	old symbol	MGI:1922981	Idnk	idnK gluconokinase homolog (E. coli)	protein coding gene
+ENSMUSG00000068293	old symbol	MGI:3642729	Gm16498	predicted gene 16498	unclassified gene
+BAI3	old symbol	MGI:2441837	Adgrb3	adhesion G protein-coupled receptor B3	protein coding gene
+BC031781	old symbol	MGI:2384788	Sde2	SDE2 telomere maintenance homolog (S. pombe)	protein coding gene
+BC031781	GenBank	MGI:2384788	Sde2	SDE2 telomere maintenance homolog (S. pombe)	protein coding gene
+B830045N13RIK	old symbol	MGI:2443035	Brinp3	bone morphogenetic protein/retinoic acid inducible neural specific 3	protein coding gene
+TH1L	old symbol	MGI:1926424	Nelfcd	negative elongation factor complex member C/D, Th1l	protein coding gene
+EDG1	old symbol	MGI:1096355	S1pr1	sphingosine-1-phosphate receptor 1	protein coding gene
+EDG1	human synonym	MGI:2385923	Hexim1	hexamethylene bis-acetamide inducible 1	protein coding gene
+PPAP2B	old symbol	MGI:1915166	Plpp3	phospholipid phosphatase 3	protein coding gene
+5730419I09RIK	old symbol	MGI:1921991	C2cd5	C2 calcium-dependent domain containing 5	protein coding gene
+CD97	old symbol	MGI:1347095	Adgre5	adhesion G protein-coupled receptor E5	protein coding gene
+EDG6	old symbol	MGI:1333809	S1pr4	sphingosine-1-phosphate receptor 4	protein coding gene
+CCDC139	old symbol	MGI:1921717	Pus10	pseudouridylate synthase 10	protein coding gene
+TMEM49	old symbol	MGI:1923159	Vmp1	vacuole membrane protein 1	protein coding gene
+ZADH1	old symbol	MGI:1916372	Ptgr2	prostaglandin reductase 2	protein coding gene
+4831426I19RIK	old symbol	MGI:2442408	Syne3	spectrin repeat containing, nuclear envelope family member 3	protein coding gene
+DNALC4	old symbol	MGI:1859217	Dnal4	dynein, axonemal, light chain 4	protein coding gene
+BC026439	old symbol	MGI:2446114	Slc22a22	solute carrier family 22 (organic cation transporter), member 22	protein coding gene
+BC026439	GenBank	MGI:2446114	Slc22a22	solute carrier family 22 (organic cation transporter), member 22	protein coding gene
+TMEM16F	old symbol	MGI:2145890	Ano6	anoctamin 6	protein coding gene
+ELA1	old symbol	MGI:95314	Cela1	chymotrypsin-like elastase family, member 1	protein coding gene
+BC038822	old symbol	MGI:2446270	Pced1b	PC-esterase domain containing 1B	protein coding gene
+BC038822	GenBank	MGI:2446270	Pced1b	PC-esterase domain containing 1B	protein coding gene
+TCFAP4	old symbol	MGI:103239	Tfap4	transcription factor AP4	protein coding gene
+4933437K13RIK	old symbol	MGI:1921728	Snx29	sorting nexin 29	protein coding gene
+VIL2	old symbol	MGI:98931	Ezr	ezrin	protein coding gene
+TMEM112	old symbol	MGI:1923733	Lmf1	lipase maturation factor 1	protein coding gene
+4930507C10RIK	old symbol	MGI:1926022	Hhipl2	hedgehog interacting protein-like 2	protein coding gene
+CAMSAP1L1	old symbol	MGI:1922434	Camsap2	calmodulin regulated spectrin-associated protein family, member 2	protein coding gene
+OTTMUSG00000016805	old symbol	MGI:3649725	Gm14488	predicted gene 14488	unclassified non-coding RNA gene
+OTTMUSG00000016805	VEGA Gene Model	MGI:3649725	Gm14488	predicted gene 14488	unclassified non-coding RNA gene
+GM114	old symbol	MGI:2684960	Kiz	kizuna centrosomal protein	protein coding gene
+TRP53RK	old symbol	MGI:1914050	Trp53rkb	transformation related protein 53 regulating kinase B	protein coding gene
+TRP53RK	rat synonym	MGI:1918294	Trp53rka	transformation related protein 53 regulating kinase A	protein coding gene
+INADL	old symbol	MGI:1277960	Patj	PATJ, crumbs cell polarity complex component	protein coding gene
+AK3L1	old symbol	MGI:87979	Ak4	adenylate kinase 4	protein coding gene
+AK3L1	human synonym	MGI:1860835	Ak3	adenylate kinase 3	protein coding gene
+4931406I20RIK	old symbol	MGI:1913993	Rnf220	ring finger protein 220	protein coding gene
+2310009E04RIK	old symbol	MGI:1922828	Fggy	FGGY carbohydrate kinase domain containing	protein coding gene
+2900024C23RIK	old symbol	MGI:1914516	Fam69a	family with sequence similarity 69, member A	protein coding gene
+BC013481	old symbol	MGI:2384294	Rbm47	RNA binding motif protein 47	protein coding gene
+BC013481	GenBank	MGI:2384294	Rbm47	RNA binding motif protein 47	protein coding gene
+AW146299	old symbol	MGI:2141165	Kpna7	karyopherin alpha 7 (importin alpha 8)	protein coding gene
+AW146299	GenBank	MGI:2141165	Kpna7	karyopherin alpha 7 (importin alpha 8)	protein coding gene
+D6WSU176E	old symbol	MGI:107892	Fam3c	family with sequence similarity 3, member C	protein coding gene
+BHLHB3	old symbol	MGI:1930704	Bhlhe41	basic helix-loop-helix family, member e41	protein coding gene
+JMJD1A	old symbol	MGI:98847	Kdm3a	lysine (K)-specific demethylase 3A	protein coding gene
+CECR5	old symbol	MGI:2136976	Hdhd5	haloacid dehalogenase like hydrolase domain containing 5	protein coding gene
+A930008G19RIK	old symbol	MGI:1925188	Fam53b	family with sequence similarity 53, member B	protein coding gene
+HRAS1	old symbol	MGI:96224	Hras	Harvey rat sarcoma virus oncogene	protein coding gene
+HRAS1	human synonym	MGI:1914235	Rassf7	Ras association (RalGDS/AF-6) domain family (N-terminal) member 7	protein coding gene
+1700018L24RIK	old symbol	MGI:1922778	Tex29	testis expressed 29	protein coding gene
+2310066E14RIK	old symbol	MGI:1922937	Ripor1	RHO family interacting cell polarization regulator 1	protein coding gene
+EDG5	old symbol	MGI:99569	S1pr2	sphingosine-1-phosphate receptor 2	protein coding gene
+4921506J03RIK	old symbol	MGI:1914971	Atxn7l3b	ataxin 7-like 3B	protein coding gene
+BC062115	old symbol	MGI:3040689	Zfp873	zinc finger protein 873	protein coding gene
+BC062115	GenBank	MGI:3040689	Zfp873	zinc finger protein 873	protein coding gene
+C330016O10RIK	old symbol	MGI:2442218	N4bp3	NEDD4 binding protein 3	protein coding gene
+5730593F17RIK	old symbol	MGI:2144564	Fam117a	family with sequence similarity 117, member A	protein coding gene
+C230094A16RIK	old symbol	MGI:2442895	Eml6	echinoderm microtubule associated protein like 6	protein coding gene
+CCRK	old symbol	MGI:2145349	Cdk20	cyclin-dependent kinase 20	protein coding gene
+3110004L20RIK	old symbol	MGI:1920352	Slc22a23	solute carrier family 22, member 23	protein coding gene
+SDCCAG10	old symbol	MGI:1914535	Cwc27	CWC27 spliceosome-associated protein	protein coding gene
+A630054L15RIK	old symbol	MGI:2442980	Dennd6a	DENN/MADD domain containing 6A	protein coding gene
+1810044A24RIK	old symbol	MGI:1923760	Trappc9	trafficking protein particle complex 9	protein coding gene
+BC021523	old symbol	MGI:2676308	Gramd4	GRAM domain containing 4	protein coding gene
+BC021523	GenBank	MGI:2676308	Gramd4	GRAM domain containing 4	protein coding gene
+SUPT3H	old symbol	MGI:1923723	Supt3	suppressor of Ty 3	protein coding gene
+SNF1LK	old symbol	MGI:104754	Sik1	salt inducible kinase 1	protein coding gene
+TCFEB	old symbol	MGI:103270	Tfeb	transcription factor EB	protein coding gene
+SFRS3	old symbol	MGI:98285	Srsf3	serine/arginine-rich splicing factor 3	protein coding gene
+4930511I11RIK	old symbol	MGI:1914895	Armc12	armadillo repeat containing 12	protein coding gene
+UBE2D2	rat synonym	MGI:1920568	Ube2d2b	ubiquitin-conjugating enzyme E2D 2B	protein coding gene
+UBE2D2	human symbol	MGI:1930715	Ube2d2a	ubiquitin-conjugating enzyme E2D 2A	protein coding gene
+1200004M23RIK	old symbol	MGI:1914707	Frmd8	FERM domain containing 8	protein coding gene
+ENSMUSG00000043661	old symbol	MGI:3641899	Gm9785	predicted pseudogene 9785	pseudogene
+ENSMUSG00000043661	Ensembl Gene Model	MGI:3641899	Gm9785	predicted pseudogene 9785	pseudogene
+

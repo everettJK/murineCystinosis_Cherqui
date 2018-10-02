@@ -10,9 +10,9 @@ library(tidyverse)
 source('./supp.R')
 CPUs <- 40
 
-savePointPrefix    <- 'secondGroup'
-reportSubjectsFile <- 'data/group2.subjects'
-reportCellTransfersFile <- 'data/group2.cellTransfers.tsv'
+savePointPrefix    <- 'group1'
+reportSubjectsFile <- 'data/group1.subjects'
+reportCellTransfersFile <- 'data/group1.cellTransfers.tsv'
 
 
 reportSubjects <- scan(reportSubjectsFile, what = 'character', sep = '\n')
@@ -139,6 +139,22 @@ intSites <- unlist(GRangesList(lapply(split(subjects, subjects$organism), functi
 save.image(file = paste0('savePoints/', savePointPrefix, '.1.RData'))
 
 
+
+# Hot fixes
+samples[which(samples$SpecimenAccNum == 'GTSP0834'),]$SpecimenInfo <- "Control, DNA was extracted from mouse Sca1+ cells and cultured for 2 weeks (Mock)"
+samples[which(samples$SpecimenAccNum == 'GTSP1868'),]$SpecimenInfo <- "pCCL-CTNS transduced, Secondary graft, Primary graft mouse: CN671, Primary graft"
+samples[which(samples$SpecimenAccNum == 'GTSP1976'),]$SpecimenInfo <- "Pathology sample 2 from CN752 (thymus)"
+samples[which(samples$SpecimenAccNum == 'GTSP1975'),]$SpecimenInfo <- "Pathology sample 1 from CN752 (found in thorax)"
+samples[which(samples$Timepoint == 0),]$Timepoint <- "D0"
+samples$Timepoint <- toupper(samples$Timepoint)
+samples[which(samples$Timepoint == '6M'),]$Timepoint <- "M6"
+intSites$timePoint <- toupper(intSites$timePoint)
+intSites$timePoint <- gsub('6M', 'M6', intSites$timePoint)
+intSites$timePoint <- gsub('^0$', 'D0', intSites$timePoint)
+
+
+
+
 # Add VCN values.
 intSites$VCN <- sapply(intSites$GTSP, function(x){ round(samples[match(x, samples$SpecimenAccNum),]$VCN, digits=3) })
 intSites[which(intSites$VCN == 0)]$VCN <- NA
@@ -146,8 +162,8 @@ intSites[which(intSites$VCN == 0)]$VCN <- NA
 
 # First, check with CYS samples are in the full list of INSPIIRED samples and then determine which 
 # of those samples are not in the intSite object which requires at least 1 site to be found for inclussion. 
-samplesNoIntSitesFound <- 
-  samples$SpecimenAccNum[! samples$SpecimenAccNum[samples$SpecimenAccNum %in% intSitesamples] %in% intSites$GTSP]
+processedSamples <- samples$SpecimenAccNum[samples$SpecimenAccNum %in% intSitesamples]
+samplesNoIntSitesFound <- processedSamples[!processedSamples %in% intSites$GTSP]
 
 failedSampleTable <-
   samples %>%
@@ -504,4 +520,17 @@ mouseGenomePercentOnco <- round((length(gt23::mouseOncoGenesList)) / length(uniq
 
 
 # Save data for report generation.
-save.image(file='project.RData')
+save.image(file='project.group1.RData')
+
+
+# Patient check
+p <- scan('group1.check', what = 'character', sep = '\n')
+i <- unique(c(intSites$patient, failedSampleTable$Patient))
+
+# Are all the patients in the patient check list accounted for in the data?
+table(p %in% i)
+
+# Are there any patients in the data not in the check list?
+table(i %in% p)
+
+

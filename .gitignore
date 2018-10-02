@@ -1,1 +1,2 @@
-project.RData
+*.RData
+savePoints/*.RData
