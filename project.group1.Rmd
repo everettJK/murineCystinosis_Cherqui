@@ -157,26 +157,28 @@ mouseIntSiteMap
 
 The sample relative abundance plots below (Figure 4) show the most abundant 25 clones in each human sample as colored 
 bars while less abundant clones were relegated to a single low abundance bar shown in gray. Subject DON.002.4.SC 
-showed an expanded clone (30% relative abundance) with an integration event down stream of the non-coding RNA gene LOC105374704. 
-Subject DON.007.CR showed an expanded clone (15% relative abundance) with three integration events within ZNF337. 
+showed an expanded clone (27% relative abundance) with an integration event down stream of the non-coding RNA gene LOC105374704. 
+Subject pCYS.013.PS (PBCD34-MOI40) showed an expanded clone (27% relative abundance) with an integration event within intron 10 of ARFGEF1. 
 These two expanded clones are not of immediate concern given that such expanded clones appeared in the WAS trial used 
 for comparison (Figure S1) and both samples contained relatively few inferred cells which inflate relative abundance values. 
 
 *Figure 4.*  
 
-```{r fig4, echo=FALSE, eval=TRUE, fig.height=7, Figurewidth=7, cache=FALSE}
-grid.arrange(grobs=humanRelAbundPlots[1:16], ncol=4)
+```{r fig4, echo=FALSE, eval=TRUE, fig.height=7, fig.width=8, cache=FALSE}
+grid.arrange(grobs = humanRelAbundPlots[1:16], ncol = 4)
 ```
 
 \newpage
 
 *Figure 4. (continued)*  
 
-```{r fig4cont, echo=FALSE, eval=TRUE, fig.height=7, Figurewidth=7, cache=FALSE}
-grid.arrange(grobs=humanRelAbundPlots[17:length(humanRelAbundPlots)], ncol=4)
+```{r fig4cont, echo=FALSE, eval=TRUE, fig.height=7, fig.width=8, cache=FALSE}
+grid.arrange(grobs = humanRelAbundPlots[17:length(humanRelAbundPlots)], ncol = 4)
 ```
 
+
 \newpage
+
 
 # Expanded clones  
 
@@ -214,7 +216,7 @@ grid.arrange(mouseDonorIntSiteMap + ggtitle('A'), mouseRecipientIntSiteMap + ggt
 \newpage
 
 
-```{r, echo=FALSE, fig.height=7, results='asis', cache=FALSE}
+```{r, echo=FALSE, fig.width=8, fig.height=7, results='asis', cache=FALSE}
 n <- 1
 for(i in 1:length(transferTrials)){
   cat(paste0('Figure 6', letters[n], '.\n\n'))
@@ -336,7 +338,16 @@ WASintSites_d0_map
   
 ```{r TableS3, echo=FALSE, eval=TRUE,  cache=FALSE}
 names(cellTransfer_intSites_table) <- c('Donor', 'Recipient', 'Position', 'Donor cells', 'Recipient cells')
-kable(cellTransfer_intSites_table, format = "latex", linesep = "", booktabs = T) %>% kable_styling(latex_options = c("striped", "scale_down"))
+kable(cellTransfer_intSites_table[1:30,], format = "latex", linesep = "", booktabs = T) %>% kable_styling(latex_options = c("striped"))
+```
+
+\newpage
+
+*Table S3. (continued)*   
+  
+```{r TableS3cnt, echo=FALSE, eval=TRUE,  cache=FALSE}
+names(cellTransfer_intSites_table) <- c('Donor', 'Recipient', 'Position', 'Donor cells', 'Recipient cells')
+kable(cellTransfer_intSites_table[31:nrow(cellTransfer_intSites_table),], format = "latex", linesep = "", booktabs = T) %>% kable_styling(latex_options = c("striped"))
 ```
 
 \newpage
@@ -346,6 +357,6 @@ Identified integration site are shown as colored squares that are positioned by 
 
 *Figure S3.*   
   
-```{r FigS3, echo=FALSE, eval=TRUE, fig.height=8, cache=FALSE, dev='png', dpi=150}
+```{r FigS3cont, echo=FALSE, eval=TRUE, fig.height=8, cache=FALSE, dev='png', dpi=150}
 intSiteReadsPlot
 ```

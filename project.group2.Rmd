@@ -4,7 +4,7 @@ geometry: margin=0.50in
 subparagraph: yes
 
 title: "Analysis of integration site distributions and clonal abundances for gene therapy correction of cystinosis"
-date:  "August 2018"
+date:  "October 2018"
 author: "John K. Everett, Ph.D. and Frederic Bushman, Ph.D."
 header-includes:
     - \usepackage{caption}
@@ -39,7 +39,12 @@ generally less than that of mice in a previously published $\beta$-thalassemia m
 been reported ^2^.  The code base for this analysis is available online 
 ([link](https://github.com/everettJK/project.geneTherapy.ucsdMouseCystinosis)).  
 
-\vspace{0.1cm}
+\vspace{0.25cm}
+
+Twenty-nine mice were tested by serial transfer of vector-treated bone marrow. From these, 64,413 cells were sampled, yielding 3,647 total unique integration sites.  In both donor and recipient samples, there was no overall increase in integration sites near annotated murine cancer-associated genes, thus providing no evidence for genotoxicity.  Some cells expanded more than others, but analysis of cells showing the most pronounced expansion showed no enrichment in integration sites in or near cancer-associated genes.
+In one case, decendants of a single cell appears to have mainly repopulated a test mouse (pCN801).  This cell appears to have harbored ~12 independent integration events, and proliferated robustly, so that the final specimen showed a VCN of 9.58.  Upon transfer to a recipient mouse (pCN951), the cell clone proliferate sluggishly (VCN 0.083), suggesting that despite the number of integration events, no major change in growth properties took place.  None of the 12 genes are annotated as cancer associated genes.  Specimens of integration into human cells in culture were also compared (VIS UCSD CYS Report.group1).  Results showed no favored integration near cancer associated genes compared to previous studies of integration site distributions.  Thus the tests of integration site distributions here provide no strong evidence for genotoxicity of the vector analyzed greater than for vectors used safely to date in ongoing human trials.  
+
+\newpage
 
 # Mouse samples studied
 
@@ -96,12 +101,14 @@ INSPIIRED integration site analysis pipeline (v1.2)^4^.
 In order to determine if the experimental vector has a higher propensity of integrating near suspected oncogene in mice than
 previously employed vectors, the frequency of integration near oncogenes was compared to a previously published mouse trial^2^ 
 which used a comparable lentiviral vector to correct $\beta$-thalassemia. The frequency of integration events near oncogenes 
-was generally less than the mean frequency of integration events near oncogenes in the published trial 
-(Figure 1 [CYS: gray, $\beta$-thalassemia trial: blue]).
+in the subjects was less than the mean frequency of integration events near oncogenes in the published trial 
+(Figure 1 [experimental subjects: gray, previous $\beta$-thalassemia trial: blue]).  
 
 \vspace{1.0cm}
 
 *Figure 1. Comparison of frequencies of integration events near oncogenes.*  
+
+\vspace{0.5cm}
 
 ```{r fig1, echo = FALSE, fig.height=4}
 PMC3129560vsMouseSubjects
@@ -109,26 +116,29 @@ PMC3129560vsMouseSubjects
 
 \newpage
 
-# Mapping of integration site positions
-Heat map of identified integration positions is shown below in Figure 2.
+# Relative abundances of mouse subject samples
 
-*Figure 2*  
+The sample relative abundance plots below (Figure 2) show the most abundant 25 clones in each sample as colored 
+bars while less abundant clones were relegated to a single low abundance bar shown in gray. 
 
-```{r fig2, echo = FALSE, fig.height=6, dev='png', dpi=150, cache=FALSE}
-mouseIntSiteMap
+\vspace{0.5cm}
+
+*Figure 2.*  
+
+\vspace{0.5cm}
+
+```{r, echo=FALSE, eval=TRUE, fig.height=7, Figurewidth=7, cache=FALSE}
+grid.arrange(grobs=mouseRelAbundPlots[1:16], ncol=4)
 ```
 
 \newpage
 
-# Relative abundances of mouse subject samples
+*Figure 2 (continued).* 
 
-The sample relative abundance plots below (Figure 3) show the most abundant 25 clones in each sample as colored 
-bars while less abundant clones were relegated to a single low abundance bar shown in gray. 
+\vspace{0.50cm}
 
-*Figure 3.*  
-
-```{r fig3, echo=FALSE, eval=TRUE, fig.height=7, Figurewidth=7, cache=FALSE}
-grid.arrange(grobs=mouseRelAbundPlots, ncol=4)
+```{r, echo=FALSE, eval=TRUE, fig.height=7, Figurewidth=7, cache=FALSE}
+grid.arrange(grobs=mouseRelAbundPlots[17:length(mouseRelAbundPlots)], ncol=4)
 ```
 
 \newpage
@@ -136,13 +146,84 @@ grid.arrange(grobs=mouseRelAbundPlots, ncol=4)
 # Expanded clones  
 
 Table 2 below lists clones with relative clonal abundances $\geq$ 20%. The estimated number of cells harboring each integration 
-(Abundance) is shown for context. 
+(Abundance) is shown for context.  
+
+\vspace{1.0cm}
 
 *Table 2.*  
 
 ```{r table2, echo=FALSE, eval=TRUE, cache=FALSE, results='asis'}
 names(abundantClones20) <- c('Subject', 'Organism', 'Time point', 'Cell type', 'Position', 'Relative abundance', 'Abundance', 'Nearest gene')
 kable(abundantClones20, format = "latex", linesep = "", booktabs = T) %>% kable_styling(latex_options = c("striped", "scale_down"))
+```
+
+\newpage
+
+# Mapping of integration site positions  
+Integration events were observerd across all mouse subject chromosomes (Figure 3). 
+
+\vspace{1.0cm}
+
+*Figure 3*  
+
+\vspace{0.25cm}
+
+```{r fig3a, echo = FALSE, fig.height=6, dev='png', dpi=150, cache=FALSE}
+mouseIntSiteMap
+```
+
+\newpage
+
+# Mouse transplant trials  
+
+The positions of identified integration sites from cell transplant trials with nine pairs of mice are shown in Figure 4a (donor
+mice) and Figure 4b (recipient mice). The gRxCluster software package did not identify clusters of integration sites
+between donor and recipient mice with a false discovery rate of $\leq$ 10%.
+The relative clonal abundances of samples from the transplant trials are shown in Figure 5 where donor mice are shown on
+the left and recipient mice are shown on the right. Integration sites are denoted by both nearest gene and genomic coordinate
+and annotated with an asterisk (*) if located within transcription units and with a tilda (~) if the integration site is within 
+50 KB of an oncogene. Below each abundance plot is a Fisher’s exact test for the enrichment of oncogenes. None of the tests returned
+a significant result. Instances where no integration sites were identified in the recipient mouse are listed as 'NA'. 
+The clonal abundances of clones found in both donor and recipient mice is shown in Table S2. The
+identification of relatively few persistent clones is likely due to sequencing experiments sampling only a subset of existing
+integration sites and a number of samples with low vector copy numbers (Figures 4B & S3).  
+
+\vspace{0.5cm}
+
+*Figure 4*  
+
+\vspace{0.25cm}
+
+```{r transplantSites, echo=FALSE, Figurewidth=11, fig.height=6, cache=FALSE}
+grid.arrange(mouseDonorIntSiteMap + ggtitle('A'), mouseRecipientIntSiteMap + ggtitle('B'), ncol=2)
+```
+
+\newpage
+
+
+```{r, echo=FALSE, fig.width=8, fig.height=7, results='asis', cache=FALSE}
+n <- 1
+for(i in 1:length(transferTrials)){
+  cat(paste0('Figure 5', letters[n], '.\n\n'))
+  n <- n+1
+  print(transferTrials[[i]][[1]])
+  
+
+  
+  cat('\n\\vspace{1.0cm}\n')
+  caption <- paste0("Fisher's exact p-value: ", sprintf("%.3f", fisher.test(transferTrials[[i]][[2]])$p.value))
+  print(kable(transferTrials[[i]][[2]], format = "latex", caption = caption, booktabs = TRUE) %>%  kable_styling(latex_options = c("hold_position")))
+  
+    if(n == 3){
+    cat('\n\\vspace{2.0cm}\n')
+    cat('\\fontsize{10}{10}\\selectfont\n')
+    cat('$\\bullet$ Integration at chr7-80692518, near 1810026B05Rik, is 6 KB upstream of oncogene Chd2.\n')
+    cat('\\fontsize{12}{16}\\selectfont\n')
+    }
+  
+  
+  cat('\n\\newpage\n')
+}
 ```
 
 \newpage
@@ -198,3 +279,26 @@ Drake MJ, Bates P, Hacein-Bey-Abina S, Cavazzana M, Bushman FD. Mol Ther Methods
 names(sampleSummary) <- c('Organism', 'GTSP', 'Subject', 'Cell type', 'VCN', 'Time point', 'Number inferred cells', 'Number of intSites')
 kable(sampleSummary, format = "latex", linesep = "", booktabs = T) %>% kable_styling(latex_options = c("striped", "scale_down"))
 ```
+
+\newpage
+
+## Persistence of clones in mouse BM transplant trials  
+
+*Table S2.*   
+  
+```{r TableS3, echo=FALSE, eval=TRUE,  cache=FALSE}
+names(cellTransfer_intSites_table) <- c('Donor', 'Recipient', 'Position', 'Donor cells', 'Recipient cells')
+kable(cellTransfer_intSites_table[1:30,], format = "latex", linesep = "", booktabs = T) %>% kable_styling(latex_options = c("striped"))
+```
+
+\newpage
+
+## Sequencing depth  
+Identified integration site are shown as colored squares that are positioned by the number of reads leading to their identification.  
+
+*Figure S3.*   
+  
+```{r FigS3cont, echo=FALSE, eval=TRUE, fig.height=8, cache=FALSE, dev='png', dpi=150}
+intSiteReadsPlot
+```
+
