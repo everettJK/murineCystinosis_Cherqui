@@ -3,8 +3,8 @@ fontsize: 12pt
 geometry: margin=0.50in
 subparagraph: yes
 
-title: "Analysis of integration site distributions and clonal abundances for gene therapy correction of cystinosis"
-date:  "October 2018"
+title:  "Analysis of integration site distributions and clonal abundances for gene therapy correction of cystinosis (Groups 1-21)"
+date:   "June 2019"
 author: "John K. Everett, Ph.D. and Frederic Bushman, Ph.D."
 header-includes:
     - \usepackage{caption}
@@ -64,9 +64,7 @@ kable(summaryTable,  format = "latex", align='c', caption = 'Table 1. Overview o
 \vspace{0.1cm}
 
 # Subject reports
-Subject specific reports for all subjects are available via a protected web archive ([link](http://www.bushmanlab.org/data/export/cherqui)).  
-user: cherqui  
-pass: geneTherapy@!#  
+Subject specific reports for all subjects are available via an online archive ([link](http://bushmanlab.org/data/export/projects/gtVISA/CYS/)).  
 
 \vspace{0.1cm}
 
@@ -108,7 +106,8 @@ different (Mann-Whitney U-test p-value: `r round(wilcox.test(humanSitesNearOnco$
 
 \vspace{0.1cm}
 
-*Figure 1. Comparison of frequencies of integration events near oncogenes.*  
+Figure 1. Comparison of frequencies of integration events near oncogenes.  
+
 ```{r fig1, echo = FALSE, fig.height=4}
 WASvsHumanSubjects
 ```
@@ -121,9 +120,9 @@ WASvsHumanSubjects
 
 In order to determine if the experimental vector has a higher propensity of integrating near suspected oncogene in mice than
 previously employed vectors, the frequency of integration near oncogenes was compared to a previously published mouse trial^3^ which used a comparable lentiviral vector to correct $\beta$-thalassemia. The frequency of integration events near onco genes 
-in bone marrow donor mice was generally less than the mean frequency of integration events near oncogenes in the published trial (Figure 2 [CYS: gray, $\beta$-thalassemia trial: blue]).
+in *bone marrow donor* mice was generally less than the mean frequency of integration events near oncogenes in the published trial (Figure 2 [CYS: gray, $\beta$-thalassemia trial: blue]).
 
-*Figure 2. Comparison of frequencies of integration events near oncogenes.*  
+Figure 2. Comparison of frequencies of integration events near oncogenes. 
 
 ```{r fig2, echo = FALSE, fig.height=4}
 PMC3129560vsMouseSubjects
@@ -135,19 +134,18 @@ PMC3129560vsMouseSubjects
 Heat maps of identified integration sites are shown below in Figure 3a (human subjects) & 3b (mouse subjects). The integration
 position profile from human subjects is very similar to the profile from the previous WAS study (Figure S2).
 
-*Figure 3a*  
+Figure 3a  
 
-
-```{r fig3a, echo = FALSE, fig.height=6, dev='png', dpi=150, cache=FALSE}
+```{r fig3a, echo = FALSE, fig.height=6, dev='png', dpi=150, cache=TRUE}
 humanIntSiteMap
 ```
 
 \newpage
 
-*Figure 3b.*  
+Figure 3b.  
 
 
-```{r fig3b, echo = FALSE, fig.height=6, dev='png', dpi=150, cache=FALSE}
+```{r fig3b, echo = FALSE, fig.height=6, dev='png', dpi=150, cache=TRUE}
 mouseIntSiteMap
 ```
 
@@ -162,30 +160,31 @@ Subject pCYS.013.PS (PBCD34-MOI40) showed an expanded clone (27% relative abunda
 These two expanded clones are not of immediate concern given that such expanded clones appeared in the WAS trial used 
 for comparison (Figure S1) and both samples contained relatively few inferred cells which inflate relative abundance values. 
 
-*Figure 4.*  
+\vspace{0.50cm}
+Figure 4.  
 
 ```{r fig4, echo=FALSE, eval=TRUE, fig.height=7, fig.width=8, cache=FALSE}
-grid.arrange(grobs = humanRelAbundPlots[1:16], ncol = 4)
+grid.arrange(grobs = humanRelAbundPlots[1:12], ncol = 4)
 ```
 
 \newpage
 
-*Figure 4. (continued)*  
+Figure 4. (continued)  
 
-```{r fig4cont, echo=FALSE, eval=TRUE, fig.height=7, fig.width=8, cache=FALSE}
-grid.arrange(grobs = humanRelAbundPlots[17:length(humanRelAbundPlots)], ncol = 4)
+\vspace{0.25cm}
+
+```{r fig4cont, echo=FALSE, eval=TRUE, fig.height=9, fig.width=8, cache=FALSE}
+grid.arrange(grobs = humanRelAbundPlots[13:length(humanRelAbundPlots)], ncol = 4)
 ```
 
-
 \newpage
-
 
 # Expanded clones  
 
 Table 2 below lists clones with relative clonal abundances $\geq$ 20%. The estimated number of cells harboring each integration 
 (Abundance) is shown for context. 
 
-*Table 2.*  
+Table 2.  
 
 ```{r table2, echo=FALSE, eval=TRUE, cache=FALSE, results='asis'}
 names(abundantClones20) <- c('Subject', 'Organism', 'Time point', 'Cell type', 'Position', 'Relative abundance', 'Abundance', 'Nearest Gene')
@@ -207,14 +206,13 @@ a significant result. The clonal abundances of clones found in both donor and re
 identification of relatively few persistent clones is likely due to sequencing experiments sampling only a subset of existing
 integration sites and a number of samples with low vector copy numbers (Figures 5B & S3).  
 
-*Figure 5*  
+Figure 5  
 
-```{r transplantSites, echo=FALSE, Figurewidth=11, fig.height=6, cache=FALSE}
+```{r transplantSites, echo=FALSE, Figurewidth=11, fig.height=6, cache=TRUE}
 grid.arrange(mouseDonorIntSiteMap + ggtitle('A'), mouseRecipientIntSiteMap + ggtitle('B'), ncol=2)
 ```
 
 \newpage
-
 
 ```{r, echo=FALSE, fig.width=8, fig.height=7, results='asis', cache=FALSE}
 n <- 1
@@ -285,7 +283,8 @@ Drake MJ, Bates P, Hacein-Bey-Abina S, Cavazzana M, Bushman FD. Mol Ther Methods
 
 ## Numbers of inferred cells and integration sites identified in provided samples
 
-*Table S1.*  
+Table S1.  
+
 ```{r tableS1, echo=FALSE, eval=TRUE, cache=FALSE}
 names(sampleSummary) <- c('Organism', 'GTSP', 'Subject', 'Cell type', 'VCN', 'Time point', 'Number inferred cells', 'Number of intSites')
 kable(sampleSummary[1:30,], format = "latex", linesep = "", booktabs = T) %>% kable_styling(latex_options = c("striped", "scale_down"))
@@ -293,7 +292,8 @@ kable(sampleSummary[1:30,], format = "latex", linesep = "", booktabs = T) %>% ka
 
 \newpage
 
-*Table S1 (continued).*  
+Table S1 (continued).  
+
 ```{r tableS1c, echo=FALSE, eval=TRUE, cache=FALSE}
 kable(sampleSummary[31:nrow(sampleSummary),], format = "latex", linesep = "", booktabs = T) %>% kable_styling(latex_options = c("striped", "scale_down"))
 ```
@@ -302,7 +302,8 @@ kable(sampleSummary[31:nrow(sampleSummary),], format = "latex", linesep = "", bo
 
 ## Analyzed samples in which no integration sites were identified  
 
-*Table S2.*  
+Table S2.  
+
 ```{r tableS2, echo=FALSE, eval=TRUE, cache=FALSE}
 names(failedSampleTable) <- c('GTSP', 'Cell type', 'Subject', 'Time point', 'Comment')
 kable(failedSampleTable, format = "latex", linesep = "", booktabs = T) %>% kable_styling(latex_options = c("striped", "scale_down"))
@@ -314,7 +315,7 @@ kable(failedSampleTable, format = "latex", linesep = "", booktabs = T) %>% kable
 
 Kolmogorov–Smirnov tests show no significant differences between the distributions of estimated abundances between trials. The plot below was truncated at 100 inferred cells for clarity which eliminated 16 data points from the ‘WAS m12’ distriubtion.  
 
-*Figure S1.*   
+Figure S1.  
   
 ```{r FigS1, echo=FALSE, eval=TRUE, fig.height=6, cache=FALSE, warning=FALSE}
 intSiteFragPlot
@@ -324,7 +325,7 @@ intSiteFragPlot
 
 ## Integration positions of the lentiviral theraputic vector from a previous WAS correction trial^1^  
 
-*Figure S2.*   
+Figure S2.  
   
 ```{r FigS2, echo=FALSE, eval=TRUE, fig.height=6, cache=FALSE}
 WASintSites_d0_map
@@ -334,7 +335,7 @@ WASintSites_d0_map
 
 ## Persistence of clones in mouse BM transplant trials  
 
-*Table S3.*   
+Table S3.  
   
 ```{r TableS3, echo=FALSE, eval=TRUE,  cache=FALSE}
 names(cellTransfer_intSites_table) <- c('Donor', 'Recipient', 'Position', 'Donor cells', 'Recipient cells')
@@ -343,7 +344,7 @@ kable(cellTransfer_intSites_table[1:30,], format = "latex", linesep = "", bookta
 
 \newpage
 
-*Table S3. (continued)*   
+Table S3. (continued)  
   
 ```{r TableS3cnt, echo=FALSE, eval=TRUE,  cache=FALSE}
 names(cellTransfer_intSites_table) <- c('Donor', 'Recipient', 'Position', 'Donor cells', 'Recipient cells')
@@ -355,7 +356,7 @@ kable(cellTransfer_intSites_table[31:nrow(cellTransfer_intSites_table),], format
 ## Sequencing depth
 Identified integration site are shown as colored squares that are positioned by the number of reads leading to their identification.  
 
-*Figure S3.*   
+Figure S3.  
   
 ```{r FigS3cont, echo=FALSE, eval=TRUE, fig.height=8, cache=FALSE, dev='png', dpi=150}
 intSiteReadsPlot
