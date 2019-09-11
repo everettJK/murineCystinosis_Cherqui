@@ -36,12 +36,7 @@ in mouse subjects and assess potential clonal expansions. The list of mouse onco
 cancer gene database (RTCGD)^1^ using an inclusion threshold of three or more incidents where the mouse oncogene list comprises 
 `r mouseGenomePercentOnco`% of all mouse genes. The frequency of integration near oncogenes was 
 generally less than that of mice in a previously published $\beta$-thalassemia mouse trial from which no adverse events have 
-been reported ^2^.  The code base for this analysis is available online 
-([link](https://github.com/everettJK/project.geneTherapy.ucsdMouseCystinosis)).  
-
-\vspace{0.25cm}
-
-Twenty-eight mice were tested by serial transfer of vector-treated bone marrow. In both donor and recipient samples, there was no overall increase in integration sites near annotated murine cancer-associated genes, thus providing no evidence for genotoxicity.  Some cells expanded more than others, but analysis of cells showing the most pronounced expansion showed no enrichment in integration sites in or near cancer-associated genes. In a number of cases, a single cell appears to have mainly populated a test mice. These clones, for the most part, appear to multi-integrated cells which appear as multiple nearly equal size bars within the relative abundance plots within this report.
+been reported ^2^.  The code base for this analysis is available online ([link](https://github.com/everettJK/project.geneTherapy.ucsdMouseCystinosis)).  
 
 \newpage
 
@@ -68,7 +63,8 @@ Subject specific reports for all subjects are available via an online archive ([
 UCSC browser sessions pre-loaded with the integration sites identified in this analysis are available via this  
 ([link](http://genome.ucsc.edu/cgi-bin/hgTracks?org=mouse&db=mm9&hgt.customText=http://microb120.med.upenn.edu/UCSC/cherqui/UCSC_CYS_mouse.group2.ucsc)). 
 Integration sites are shown as blue (positive orientation integration) and red (reverse orientation integration) tick marks. For each integration site, 
-a second track provides the maximum clonal abundance. Entering gene names into the search bar will direct the browser to specific genes. 
+the intensity of the color reflects the maximum abundance observed. 
+
 
 \newpage
 

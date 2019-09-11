@@ -382,10 +382,15 @@ intSites$nearestFeature2 <-
 # cellTransfer_intSites_table <- bind_rows(lapply(transferTrials, '[[', 3))
 # 
 
-o <- subset(intSites, organism == 'mouse')
-createUCSCintSiteAbundTrack(o$posid, o$estAbund, subject = 'CYS_mouse', title = 'CYS_mouse', outputFile = 'UCSC_CYS_mouse.group3.ucsc')
+dplyr::group_by(data.frame(subset(intSites, organism == 'mouse')), posid) %>%
+  dplyr::arrange(desc(estAbund)) %>%
+  dplyr::slice(1) %>%
+  dplyr::mutate(siteLabel = paste0(patient, '_', posid)) %>%
+  dplyr::ungroup() %>%
+  createUCSCintSiteTrack(title = 'CYS_mouse', outputFile = 'UCSC_CYS_mouse.group3.ucsc', siteLabel = 'siteLabel', padSite = 5)
 system(paste0('scp UCSC_CYS_mouse.group3.ucsc  microb120:/usr/share/nginx/html/UCSC/cherqui/'))
-file.remove('UCSC_CYS_mouse.group3.ucsc')
+invisible(file.remove('UCSC_CYS_mouse.group3.ucsc'))
+
 
 
 # Report shortcuts.

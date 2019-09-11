@@ -41,7 +41,7 @@ The frequency of integration sites in human subjects near oncogenes was not sign
 using a comparable vector to correct Wiskott-Aldrich syndrome (WAS) from which no adverse events have been reported^2^. 
 The frequency of integration sites in bone marrow donor mice near oncogenes was generally less than that of mice in a previously 
 published $\beta$-thalassemia mouse trial from which no adverse events have been reported ^3^. The integration position profile 
-for human subjects was very similar to that found in the WAS trial. The mouse bone marrow transplant trials yielded varying degrees 
+for human subjects was very similar to that found in the WAS trial. Mouse bone marrow transplant trials yielded varying degrees 
 of persistence in five of the nine trials where detection was limited due to both sequencing depth and vector copy number. 
 No significant enrichment of integration events near oncogenes was identified between donor and recipient mice. The code base 
 for this analysis is available on-line ([link](https://github.com/everettJK/project.geneTherapy.ucsdMouseCystinosis)).
@@ -73,7 +73,8 @@ UCSC browser sessions pre-loaded with the integration sites identified in this a
 ([human subjects](http://genome.ucsc.edu/cgi-bin/hgTracks?org=human&db=hg38&hgt.customText=http://microb120.med.upenn.edu/UCSC/cherqui/UCSC_CYS_human.group1.ucsc)), 
 ([mouse subjects](http://genome.ucsc.edu/cgi-bin/hgTracks?org=mouse&db=mm9&hgt.customText=http://microb120.med.upenn.edu/UCSC/cherqui/UCSC_CYS_mouse.group1.ucsc)). 
 Integration sites are shown as blue (positive orientation integration) and red (reverse orientation integration) tick marks. For each integration site, 
-a second track provides the maximum clonal abundance. Entering gene names into the search bar will direct the browser to specific genes. 
+the intensity of the color reflects the maximum abundance observed. 
+
 
 \newpage
 

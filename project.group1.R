@@ -140,9 +140,7 @@ samples[which(samples$SpecimenAccNum == 'GTSP0834'),]$SpecimenInfo <- "Control, 
 samples[which(samples$SpecimenAccNum == 'GTSP1868'),]$SpecimenInfo <- "pCCL-CTNS transduced, Secondary graft, Primary graft mouse: CN671, Primary graft"
 samples[which(samples$SpecimenAccNum == 'GTSP1976'),]$SpecimenInfo <- "Pathology sample 2 from CN752 (thymus)"
 samples[which(samples$SpecimenAccNum == 'GTSP1975'),]$SpecimenInfo <- "Pathology sample 1 from CN752 (found in thorax)"
-#samples[which(samples$Timepoint == 0),]$Timepoint <- "D0"
-samples$Timepoint <- toupper(samples$Timepoint)
-#samples[which(samples$Timepoint == '6M'),]$Timepoint <- "M6"
+samples$Timepoint  <- toupper(samples$Timepoint)
 intSites$timePoint <- toupper(intSites$timePoint)
 intSites$timePoint <- gsub('6M', 'M6', intSites$timePoint)
 intSites$timePoint <- gsub('^0$', 'D0', intSites$timePoint)
@@ -517,16 +515,28 @@ cellTransfer_intSites_table <- bind_rows(lapply(transferTrials, '[[', 3))
 
 
 # Create UCSC track files.
-o <- subset(intSites, organism == 'human')
-createUCSCintSiteAbundTrack(o$posid, o$estAbund, subject = 'CYS_human', title = 'CYS_human', outputFile = 'UCSC_CYS_human.group1.ucsc')
+
+dplyr::group_by(data.frame(subset(intSites, organism == 'human')), posid) %>%
+  dplyr::arrange(desc(estAbund)) %>%
+  dplyr::slice(1) %>%
+  dplyr::mutate(siteLabel = paste0(patient, '_', posid)) %>%
+  dplyr::ungroup() %>%
+  createUCSCintSiteTrack(title = 'CYS_mouse', outputFile = 'UCSC_CYS_human.group1.ucsc', siteLabel = 'siteLabel', padSite = 5)
 system(paste0('scp UCSC_CYS_human.group1.ucsc  microb120:/usr/share/nginx/html/UCSC/cherqui/'))
-file.remove('UCSC_CYS_human.group1.ucsc')
+invisible(file.remove('UCSC_CYS_human.group1.ucsc'))
 
 
-o <- subset(intSites, organism == 'mouse')
-createUCSCintSiteAbundTrack(o$posid, o$estAbund, subject = 'CYS_mouse', title = 'CYS_mouse', outputFile = 'UCSC_CYS_mouse.group1.ucsc')
+dplyr::group_by(data.frame(subset(intSites, organism == 'mouse')), posid) %>%
+  dplyr::arrange(desc(estAbund)) %>%
+  dplyr::slice(1) %>%
+  dplyr::mutate(siteLabel = paste0(patient, '_', posid)) %>%
+  dplyr::ungroup() %>%
+  createUCSCintSiteTrack(title = 'CYS_mouse', outputFile = 'UCSC_CYS_mouse.group1.ucsc', siteLabel = 'siteLabel', padSite = 5)
 system(paste0('scp UCSC_CYS_mouse.group1.ucsc  microb120:/usr/share/nginx/html/UCSC/cherqui/'))
-file.remove('UCSC_CYS_mouse.group1.ucsc')
+invisible(file.remove('UCSC_CYS_mouse.group1.ucsc'))
+
+
+
 
 
 # Report shortcuts.

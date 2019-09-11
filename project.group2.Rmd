@@ -68,7 +68,7 @@ Subject specific reports for all subjects are available via an online archive ([
 UCSC browser sessions pre-loaded with the integration sites identified in this analysis are available via this  
 ([link](http://genome.ucsc.edu/cgi-bin/hgTracks?org=mouse&db=mm9&hgt.customText=http://microb120.med.upenn.edu/UCSC/cherqui/UCSC_CYS_mouse.group2.ucsc)). 
 Integration sites are shown as blue (positive orientation integration) and red (reverse orientation integration) tick marks. For each integration site, 
-a second track provides the maximum clonal abundance. Entering gene names into the search bar will direct the browser to specific genes. 
+the intensity of the color reflects the maximum abundance observed. 
 
 \newpage
 
