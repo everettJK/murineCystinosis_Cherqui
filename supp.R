@@ -1,4 +1,9 @@
-
+createColorPalette <- function (n) 
+{
+  library(RColorBrewer)
+  library(grDevices)
+  colorRampPalette(brewer.pal(12, "Paired"))(n)
+}
 
 
 # UCSC visibility codes: 0 - hide, 1 - dense, 2 - full, 3 - pack, and 4 - squish. 

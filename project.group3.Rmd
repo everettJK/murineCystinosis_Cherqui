@@ -4,7 +4,7 @@ geometry: margin=0.50in
 subparagraph: yes
 
 title: "Analysis of integration site distributions and clonal abundances for gene therapy correction of cystinosis (Groups 29-30)"
-date:  "June 2019"
+date:  "November 2019"
 author: "John K. Everett, Ph.D. and Frederic Bushman, Ph.D."
 header-includes:
     - \usepackage{caption}
@@ -61,7 +61,7 @@ Subject specific reports for all subjects are available via an online archive ([
 
 # UCSC browser exploration
 UCSC browser sessions pre-loaded with the integration sites identified in this analysis are available via this  
-([link](http://genome.ucsc.edu/cgi-bin/hgTracks?org=mouse&db=mm9&hgt.customText=http://microb120.med.upenn.edu/UCSC/cherqui/UCSC_CYS_mouse.group2.ucsc)). 
+([link](http://genome.ucsc.edu/cgi-bin/hgTracks?org=mouse&db=mm9&hgt.customText=http://microb120.med.upenn.edu/UCSC/cherqui/UCSC_CYS_mouse.group3.ucsc)). 
 Integration sites are shown as blue (positive orientation integration) and red (reverse orientation integration) tick marks. For each integration site, 
 the intensity of the color reflects the maximum abundance observed. 
 
@@ -164,6 +164,50 @@ Figure 3.
 mouseIntSiteMap
 ```
 
+\newpage
+
+# Mouse transplant trials  
+
+The positions of identified integration sites from cell transplant trials with nine pairs of mice are shown in Figure 4a (donor
+mice) and Figure 4b (recipient mice). The gRxCluster software package did not identify clusters of integration sites
+between donor and recipient mice with a false discovery rate of $\leq$ 10%.
+The relative clonal abundances of samples from the transplant trials are shown in Figure 5 where donor mice are shown on
+the left and recipient mice are shown on the right. Integration sites are denoted by both nearest gene and genomic coordinate
+and annotated with an asterisk (*) if located within transcription units and with a tilda (~) if the integration site is within 
+50 KB of an oncogene. Below each abundance plot is a Fisher’s exact test for the enrichment of oncogenes. None of the tests returned
+a significant result. Instances where no integration sites were identified in the recipient mouse are listed as 'NA'. 
+The clonal abundances of clones found in both donor and recipient mice is shown in Table S2. The
+identification of relatively few persistent clones is likely due to sequencing experiments sampling only a subset of existing
+integration sites and a number of samples with low vector copy numbers (Figures 4B & S3).  
+
+\vspace{0.5cm}
+
+Figure 4.  
+
+\vspace{0.25cm}
+
+```{r transplantSites, echo=FALSE, Figurewidth=11, fig.height=6, cache=FALSE}
+grid.arrange(mouseDonorIntSiteMap + ggtitle('A'), mouseRecipientIntSiteMap + ggtitle('B'), ncol=2)
+```
+
+\newpage
+
+```{r, echo=FALSE, fig.width=8, fig.height=7, results='asis', cache=FALSE}
+n <- 1
+for(i in 1:length(transferTrials)){
+  cat(paste0('Figure 5', letters[n], '.\n\n'))
+  n <- n+1
+  print(transferTrials[[i]][[1]])
+  
+  cat('\n\\vspace{1.0cm}\n')
+  caption <- paste0("Fisher's exact p-value: ", sprintf("%.3f", fisher.test(transferTrials[[i]][[2]])$p.value))
+  print(kable(transferTrials[[i]][[2]], format = "latex", caption = caption, booktabs = TRUE) %>%  kable_styling(latex_options = c("hold_position")))
+  
+  
+  cat('\n\\newpage\n')
+}
+```
+
 
 \newpage
 
@@ -219,15 +263,3 @@ Table S1.
 names(sampleSummary) <- c('Organism', 'GTSP', 'Subject', 'Cell type', 'VCN', 'Time point', 'Number inferred cells', 'Number of intSites')
 kable(sampleSummary, format = "latex", linesep = "", booktabs = T) %>% kable_styling(latex_options = c("striped", "scale_down"))
 ```
-
-\newpage
-
-## Sequencing depth  
-Identified integration site are shown as colored squares that are positioned by the number of reads leading to their identification.  
-
-Figure S2.  
-  
-```{r FigS3cont, echo=FALSE, eval=TRUE, fig.height=8, cache=FALSE, dev='png', dpi=150}
-intSiteReadsPlot
-```
-

@@ -4,7 +4,7 @@ geometry: margin=0.50in
 subparagraph: yes
 
 title: "Analysis of integration site distributions and clonal abundances for gene therapy correction of cystinosis (Groups 24-28)"
-date:  "June 2019"
+date:  "November 2019"
 author: "John K. Everett, Ph.D. and Frederic Bushman, Ph.D."
 header-includes:
     - \usepackage{caption}
@@ -134,7 +134,17 @@ Figure 2 (continued).
 \vspace{0.50cm}
 
 ```{r, echo=FALSE, eval=TRUE, fig.height=9, Figurewidth=8, cache=FALSE}
-grid.arrange(grobs=mouseRelAbundPlots[17:length(mouseRelAbundPlots)], ncol=4)
+grid.arrange(grobs=mouseRelAbundPlots[17:36], ncol=4)
+```
+
+\newpage
+
+Figure 2 (continued).  
+
+\vspace{0.50cm}
+
+```{r, echo=FALSE, eval=TRUE, fig.height=9, Figurewidth=8, cache=FALSE}
+grid.arrange(grobs=mouseRelAbundPlots[37:length(mouseRelAbundPlots)], ncol=4)
 ```
 
 \newpage
@@ -265,7 +275,7 @@ Drake MJ, Bates P, Hacein-Bey-Abina S, Cavazzana M, Bushman FD. Mol Ther Methods
 
 # Supplementary tables and figures
 
-## Numbers of inferred cells and integration sites identified in provided samples
+**Numbers of inferred cells and integration sites identified in provided samples**
 
 Table S1.  
 
@@ -276,7 +286,7 @@ kable(sampleSummary, format = "latex", linesep = "", booktabs = T) %>% kable_sty
 
 \newpage
 
-## Persistence of clones in mouse BM transplant trials  
+**Persistence of clones in mouse BM transplant trials**    
 
 Table S2.  
   
@@ -284,15 +294,3 @@ Table S2.
 names(cellTransfer_intSites_table) <- c('Donor', 'Recipient', 'Position', 'Donor cells', 'Recipient cells')
 kable(cellTransfer_intSites_table[1:30,], format = "latex", linesep = "", booktabs = T) %>% kable_styling(latex_options = c("striped"))
 ```
-
-\newpage
-
-## Sequencing depth  
-Identified integration site are shown as colored squares that are positioned by the number of reads leading to their identification.  
-
-Figure S3.  
-  
-```{r FigS3cont, echo=FALSE, eval=TRUE, fig.height=8, cache=FALSE, dev='png', dpi=150}
-intSiteReadsPlot
-```
-
