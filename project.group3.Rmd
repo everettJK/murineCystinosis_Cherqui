@@ -129,7 +129,7 @@ Figure 2 (continued).
 
 \vspace{0.50cm}
 
-```{r, echo=FALSE, eval=TRUE, fig.height=6, Figurewidth=8, cache=FALSE}
+```{r, echo=FALSE, eval=TRUE, fig.height=9.5, Figurewidth=8, cache=FALSE}
 grid.arrange(grobs=mouseRelAbundPlots[17:length(mouseRelAbundPlots)], ncol=4)
 ```
 

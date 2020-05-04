@@ -368,17 +368,17 @@ transferTrials <- lapply(1:nrow(cellTransfers), function(i){
     mutate(label2 = factor(label2, levels = unique(label2))) %>%
     mutate(label2 = fct_relevel(label2, 'LowAbund')) %>%
     arrange(desc(relAbund)) %>%
-    ggplot(aes(label1, relAbund, fill=label2)) +
+    ggplot(aes(label1, relAbund/100, fill=label2)) +
       theme_bw() +
       geom_bar(stat='identity') +
       scale_fill_manual(name = 'Integrations', values = c('gray90', createColorPalette(24))) +
+      scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
       labs(x='', y='Relative abundance') +
     guides(fill=guide_legend(ncol=2)) +
     theme(legend.key.size = unit(2, "line"), legend.text=element_text(size=10)) +
     theme(panel.border = element_blank(), panel.grid.major = element_blank(),
           panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
   
-  guides(shape = guide_legend(override.aes = list(size = 5)))
   
   m <- matrix(c(sum(abs(a$nearestOncoFeatureDist) > 50000, na.rm = TRUE),  sum(abs(a$nearestOncoFeatureDist) <= 50000, na.rm = TRUE),
                 sum(abs(b$nearestOncoFeatureDist) > 50000, na.rm = TRUE),  sum(abs(b$nearestOncoFeatureDist) <= 50000, na.rm = TRUE)), 

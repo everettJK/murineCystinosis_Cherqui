@@ -14,7 +14,7 @@ savePointPrefix         <- 'group2'
 reportSubjectsFile      <- 'data/group2.subjects'
 reportCellTransfersFile <- 'data/group2.cellTransfers.tsv'
 
-reportSubjects <- scan(reportSubjectsFile, what = 'character', sep = '\n')
+reportSubjects <- gsub('\\s', '', scan(reportSubjectsFile, what = 'character', sep = '\n'))
 
 # cellTransfers   <- read.table('data/cellTransfers.tsv', header=TRUE, sep='\t', check.names = FALSE)
 cellTransfers <- data.frame(From = 'none', To = 'none')
@@ -53,7 +53,7 @@ samples$Timepoint <- toupper(samples$Timepoint)
 
 # Add VCN values.
 intSites$VCN <- sapply(intSites$GTSP, function(x){ round(samples[match(x, samples$SpecimenAccNum),]$VCN, digits=3) })
-if(length(which(intSites$VCN == 0) > 0)) intSites[which(intSites$VCN == 0)]$VCN <- NA
+### if(length(which(intSites$VCN == 0) > 0)) intSites[which(intSites$VCN == 0)]$VCN <- NA
 
 
 # Add organism nick name
@@ -140,14 +140,13 @@ mouseDonorIntSiteMap <- intSiteDistributionPlot(subset(intSites, GTSP %in% cellT
 mouseRecipientIntSiteMap <- intSiteDistributionPlot(subset(intSites, GTSP %in% cellTransfers$To), chromosomeLengths, alpha = 0.5)
 
 
-# Create relative abundance plots for the human samples and store them as a list of grobs so that they 
-# can be arranged in the report.
+# Create relative abundance plots.
 
 o <-
   intSites %>%
   data.frame() %>%
   filter(organism == 'mouse') %>%
-  group_by(GTSP) %>%
+  group_by(patient, GTSP) %>%
   mutate(nSites = n_distinct(posid),
          cells  = numShortHand(sum(estAbund, na.rm = TRUE)),
          VCN    = paste0('VCN: ', VCN)) %>%
@@ -261,23 +260,20 @@ transferTrials <- lapply(1:nrow(cellTransfers), function(i){
   
   plot <- 
     plotData %>%
-    mutate(label1 = factor(label1, levels=unique(label1))) %>%
+    mutate(label1 = factor(label1, levels = unique(label1))) %>%
     mutate(label2 = factor(label2, levels = unique(label2))) %>%
     mutate(label2 = fct_relevel(label2, 'LowAbund')) %>%
     arrange(desc(relAbund)) %>%
-    ggplot(aes(label1, relAbund, fill=label2)) +
+    ggplot(aes(label1, relAbund/100, fill=label2)) +
       theme_bw() +
       geom_bar(stat='identity') +
       scale_fill_manual(name = 'Integrations', values = c('gray90', createColorPalette(24))) +
       labs(x='', y='Relative abundance') +
+      scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
     guides(fill=guide_legend(ncol=2)) +
-    theme(legend.key.size = unit(2, "line"), legend.text=element_text(size=10)) +
-    theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+    theme(legend.key.size = unit(2, "line"), legend.text=element_text(size=10),
+          panel.border = element_blank(), panel.grid.major = element_blank(),
           panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
-  
-  guides(shape = guide_legend(override.aes = list(size = 5)))
-  
-  
   
   m <- matrix(c(sum(abs(a$nearestOncoFeatureDist) > 50000, na.rm = TRUE),  sum(abs(a$nearestOncoFeatureDist) <= 50000, na.rm = TRUE),
                 sum(abs(b$nearestOncoFeatureDist) > 50000, na.rm = TRUE),  sum(abs(b$nearestOncoFeatureDist) <= 50000, na.rm = TRUE)), 

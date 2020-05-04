@@ -14,7 +14,7 @@ savePointPrefix         <- 'group3'
 reportSubjectsFile      <- 'data/group3.subjects'
 reportCellTransfersFile <- 'data/group3.cellTransfers.tsv'
 
-reportSubjects <- scan(reportSubjectsFile, what = 'character', sep = '\n')
+reportSubjects <- gsub('\\s', '', scan(reportSubjectsFile, what = 'character', sep = '\n'))
 
 # cellTransfers   <- read.table('data/cellTransfers.tsv', header=TRUE, sep='\t', check.names = FALSE)
 cellTransfers <- data.frame(From = 'none', To = 'none')
@@ -51,7 +51,7 @@ if(! file.exists(paste0('savePoints/', savePointPrefix, '.1.RData'))){
 
 # Add VCN values.
 intSites$VCN <- sapply(intSites$GTSP, function(x){ round(samples[match(x, samples$SpecimenAccNum),]$VCN, digits=3) })
-if(length(which(intSites$VCN == 0) > 0)) intSites[which(intSites$VCN == 0)]$VCN <- NA
+# if(length(which(intSites$VCN == 0) > 0)) intSites[which(intSites$VCN == 0)]$VCN <- NA
 
 
 # Add organism nick name
@@ -261,18 +261,18 @@ transferTrials <- lapply(1:nrow(cellTransfers), function(i){
     mutate(label2 = factor(label2, levels = unique(label2))) %>%
     mutate(label2 = fct_relevel(label2, 'LowAbund')) %>%
     arrange(desc(relAbund)) %>%
-    ggplot(aes(label1, relAbund, fill=label2)) +
+    ggplot(aes(label1, relAbund/100, fill=label2)) +
       theme_bw() +
       geom_bar(stat='identity') +
       scale_fill_manual(name = 'Integrations', values = c('gray90', createColorPalette(24))) +
       labs(x='', y='Relative abundance') +
+    scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
     guides(fill=guide_legend(ncol=2)) +
     theme(legend.key.size = unit(2, "line"), legend.text=element_text(size=10)) +
     theme(panel.border = element_blank(), panel.grid.major = element_blank(),
           panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
 
   guides(shape = guide_legend(override.aes = list(size = 5)))
-
 
 
   m <- matrix(c(sum(abs(a$nearestOncoFeatureDist) > 50000, na.rm = TRUE),  sum(abs(a$nearestOncoFeatureDist) <= 50000, na.rm = TRUE),
